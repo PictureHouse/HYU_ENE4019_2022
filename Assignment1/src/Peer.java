@@ -15,9 +15,9 @@ public class Peer {
     
 	@SuppressWarnings("deprecation")
 	public static void main(String[] args) {
-        if (args.length != 1)
-            System.out.println("포트 번호가 argument로 필요합니다!");
-        else {
+        if (args.length != 1) {
+            System.out.println("Please enter port number as an argument!");
+        } else {
             try {
             	int port = Integer.parseInt(args[0]);
             	InetAddress group;
@@ -26,7 +26,7 @@ public class Peer {
             		String input;
             		input = scanner.nextLine();
             		if (input.equalsIgnoreCase(Peer.JOIN)) {
-            			System.out.print("참여할 채팅방의 이름 : ");
+            			System.out.print("Enter chatting room name : ");
             			room = scanner.nextLine();
             			MessageDigest digest = MessageDigest.getInstance("SHA-256");
             			byte[] hash = digest.digest(room.getBytes(StandardCharsets.UTF_8));
@@ -39,22 +39,20 @@ public class Peer {
             			address = "225." + x + "." + y + "." + z;
             			group = InetAddress.getByName(address);
             			
-            			System.out.print("사용자 이름 : ");
+            			System.out.print("Enter your name : ");
             			name = scanner.nextLine();
             			break;
             		}
             	}
             	
                 MulticastSocket socket = new MulticastSocket(port);
-
-                socket.setTimeToLive(0);
-                  
+                socket.setTimeToLive(0);                  
                 socket.joinGroup(group);
-                Thread thread = new Thread (new ReadThread(port, group, socket));
-
+                
+                Thread thread = new Thread(new ReadThread(port, group, socket));
                 thread.start(); 
                 
-                System.out.println("메시지를 입력하세요...\n");
+                System.out.println("Insert message...\n");
                 while (true) {
                     String message;
                     message = scanner.nextLine();
@@ -71,13 +69,13 @@ public class Peer {
                     }
                 }
             } catch (NoSuchAlgorithmException nsae) {
-				System.out.println("해싱 에러");
+				System.out.println("Hashing error!");
 				nsae.printStackTrace();
 			} catch (SocketException se) {
-                System.out.println("소켓 생성 에러");
+                System.out.println("Socket error!");
                 se.printStackTrace();
             } catch (IOException ie) {
-                System.out.println("소켓 값 읽기 쓰기 에러");
+                System.out.println("Socket input/output error!");
                 ie.printStackTrace();
             }  
         }
@@ -109,7 +107,7 @@ class ReadThread implements Runnable {
                     System.out.println(message);
                 }
             } catch (IOException e) {
-                System.out.println("채팅방을 떠났습니다!");
+                System.out.println("Good bye!");
             }
         }
     }
